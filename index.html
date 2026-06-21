@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Мерчендайзер</title>
+
+<style>
+body{
+    font-family:Arial,sans-serif;
+    margin:0;
+    padding:15px;
+    background:#f5f5f5;
+}
+
+.shop{
+    width:100%;
+    padding:15px;
+    margin-bottom:8px;
+    border:none;
+    border-radius:12px;
+    font-size:18px;
+}
+
+.active{
+    background:#dbeafe;
+}
+
+.card{
+    background:white;
+    border-radius:12px;
+    padding:15px;
+    margin-top:15px;
+}
+
+.row{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin:10px 0;
+}
+
+.name{
+    flex:1;
+}
+
+.counter{
+    min-width:35px;
+    text-align:center;
+    font-weight:bold;
+}
+
+.btn{
+    width:40px;
+    height:40px;
+    font-size:20px;
+}
+</style>
+</head>
+
+<body>
+
+<h2>Товары на выкладку</h2>
+
+<div id="shops"></div>
+
+<div class="card">
+<input id="newProduct" placeholder="Добавить товар">
+<button onclick="addProduct()">Добавить</button>
+</div>
+
+<div class="card">
+<div id="products"></div>
+</div>
+
+<script>
+
+const stores = [
+"Таир Южный",
+"Березка Аян",
+"Оптима Ермекова",
+"Южный Гармошка"
+];
+
+let currentStore =
+localStorage.getItem("currentStore") || stores[0];
+
+let db =
+JSON.parse(localStorage.getItem("merchDB") || "{}");
+
+stores.forEach(store=>{
+    if(!db[store]) db[store]={};
+});
+
+function save(){
+    localStorage.setItem(
+        "merchDB",
+        JSON.stringify(db)
+    );
+
+    localStorage.setItem(
+        "currentStore",
+        currentStore
+    );
+}
+
+function renderStores(){
+
+    let html="";
+
+    stores.forEach(store=>{
+
+        html+=`
+        <button
+        class="shop ${store===currentStore?"active":""}"
+        onclick="selectStore('${store}')">
+        ${store}
+        </button>
+        `;
+
+    });
+
+    document.getElementById("shops").innerHTML=html;
+}
+
+function selectStore(store){
+    currentStore=store;
+    save();
+    render();
+}
+
+function addProduct(){
+
+    let product =
+    document.getElementById("newProduct")
+    .value
+    .trim();
+
+    if(!product) return;
+
+    stores.forEach(store=>{
+
+        if(db[store][product]===undefined)
+            db[store][product]=0;
+
+    });
+
+    document.getElementById("newProduct").value="";
+
+    save();
+    render();
+}
+
+function change(product,value){
+
+    db[currentStore][product]+=value;
+
+    if(db[currentStore][product]<0)
+        db[currentStore][product]=0;
+
+    save();
+    render();
+}
+
+function renderProducts(){
+
+    let html="";
+
+    Object.keys(db[currentStore])
+    .sort()
+    .forEach(product=>{
+
+        html+=`
+        <div class="row">
+
+            <div class="name">
+                ${product}
+            </div>
+
+            <button class="btn"
+            onclick="change('${product}',-1)">
+            -
+            </button>
+
+            <div class="counter">
+                ${db[currentStore][product]}
+            </div>
+
+            <button class="btn"
+            onclick="change('${product}',1)">
+            +
+            </button>
+
+        </div>
+        `;
+    });
+
+    document.getElementById("products").innerHTML=html;
+}
+
+function render(){
+    renderStores();
+    renderProducts();
+}
+
+render();
+
+</script>
+
+</body>
+</html>
