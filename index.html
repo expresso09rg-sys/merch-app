@@ -347,6 +347,16 @@ id="totalCount">
 
 </div>
 
+<br>
+
+<button
+class="btn btn-red"
+onclick="resetCurrentStore()">
+
+🧹 Очистить магазин
+
+</button>
+
 </div>
 
 </div>
@@ -1383,7 +1393,40 @@ file
 );
 
 }
+function resetCurrentStore(){
 
+if(
+!confirm(
+"Очистить текущий магазин?"
+)
+){
+return;
+}
+
+Object.keys(
+app.days[today]
+.stores[currentStore]
+)
+.forEach(product=>{
+
+app.days[today]
+.stores[currentStore]
+[product] = {
+
+count:0,
+taken:false
+
+};
+
+});
+
+saveData();
+
+renderProducts();
+
+}
+    
+    
 updateHeader();
 
 renderStores();
