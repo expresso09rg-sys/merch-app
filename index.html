@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
 <title>Merch Tracker Pro</title>
 
-  <link rel="manifest" href="manifest.json">
+<link rel="manifest" href="manifest.json">
 
 <meta name="theme-color" content="#f59e0b">
 
@@ -14,401 +17,1072 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Merch Tracker">
-  
+
 <style>
+
+:root{
+--primary:#f59e0b;
+--green:#22c55e;
+--red:#ef4444;
+--bg:#f3f4f6;
+--card:#ffffff;
+--text:#111827;
+}
+
 *{
-box-sizing:border-box;
 margin:0;
 padding:0;
+box-sizing:border-box;
 font-family:-apple-system,BlinkMacSystemFont,sans-serif;
 }
 
 body{
-background:#f4f4f4;
-padding:15px;
+background:var(--bg);
+color:var(--text);
+padding:12px;
 max-width:900px;
 margin:auto;
 }
 
-h1{
+.header{
+background:var(--card);
+padding:16px;
+border-radius:16px;
+margin-bottom:12px;
+box-shadow:0 2px 10px rgba(0,0,0,.08);
+}
+
+.title{
 font-size:24px;
-margin-bottom:15px;
+font-weight:700;
+}
+
+.subtitle{
+margin-top:6px;
+color:#666;
+font-size:14px;
+}
+
+.card{
+background:var(--card);
+padding:12px;
+border-radius:16px;
+margin-bottom:12px;
+box-shadow:0 2px 10px rgba(0,0,0,.08);
 }
 
 .tabs{
 display:flex;
 gap:8px;
 overflow-x:auto;
-margin-bottom:15px;
+padding-bottom:4px;
 }
 
 .tab{
 border:none;
-padding:12px;
+padding:10px 14px;
 border-radius:12px;
-background:white;
-cursor:pointer;
+background:#e5e7eb;
 white-space:nowrap;
+font-weight:600;
+cursor:pointer;
 }
 
-.active{
-background:#0a84ff;
+.tab.active{
+background:var(--primary);
 color:white;
 }
 
-.card{
-background:white;
-border-radius:16px;
-padding:12px;
-margin-bottom:12px;
-box-shadow:0 2px 8px rgba(0,0,0,.08);
-}
-
-input{
+.input{
 width:100%;
 padding:12px;
 border:1px solid #ddd;
 border-radius:12px;
-margin-bottom:8px;
 font-size:16px;
+margin-bottom:8px;
 }
 
 .btn{
 border:none;
-border-radius:12px;
 padding:12px;
+border-radius:12px;
+font-weight:600;
 cursor:pointer;
 }
 
-.blue{
-background:#0a84ff;
+.btn-primary{
+background:var(--primary);
 color:white;
 }
 
-.red{
-background:#ff3b30;
+.btn-green{
+background:var(--green);
 color:white;
 }
 
-.green{
-background:#34c759;
+.btn-red{
+background:var(--red);
 color:white;
+}
+
+.row{
+display:flex;
+gap:8px;
+flex-wrap:wrap;
+}
+
+.row .btn{
+flex:1;
 }
 
 .product{
+background:white;
+border-radius:14px;
 padding:12px;
-border-bottom:1px solid #eee;
-}
-
-.product:last-child{
-border-bottom:none;
+margin-bottom:10px;
+border:1px solid #eee;
 }
 
 .product.done{
 background:#e8ffe8;
-border-radius:12px;
 }
 
-.name{
-font-weight:600;
+.product-name{
+font-weight:700;
 margin-bottom:10px;
+font-size:16px;
 }
 
-.controls{
+.counter-row{
 display:flex;
 align-items:center;
 gap:6px;
-flex-wrap:wrap;
+margin-bottom:8px;
 }
 
 .counter{
-font-size:20px;
+min-width:50px;
+text-align:center;
+font-size:22px;
 font-weight:700;
-width:45px;
+}
+
+.small-btn{
+padding:10px;
+border:none;
+border-radius:10px;
+font-weight:700;
+cursor:pointer;
+}
+
+.total-box{
+font-size:22px;
+font-weight:700;
 text-align:center;
 }
 
-.small{
-padding:8px 10px;
+.history-item{
+padding:10px;
+border-bottom:1px solid #eee;
 }
 
-.total{
-font-size:20px;
-font-weight:bold;
-text-align:center;
-padding:15px;
+.hidden{
+display:none;
 }
 
-.check{
-margin-top:10px;
+.view-switch{
 display:flex;
-align-items:center;
 gap:8px;
+margin-bottom:12px;
 }
+
+.view-btn{
+flex:1;
+}
+
+.calendar-date{
+padding:12px;
+border-radius:12px;
+background:#f5f5f5;
+margin-bottom:8px;
+cursor:pointer;
+font-weight:600;
+}
+
 </style>
+
 </head>
 
 <body>
 
-<h1>Товары на выкладку</h1>
+<div class="header">
+<div class="title">🍺 Merch Tracker Pro</div>
+<div class="subtitle" id="todayLabel"></div>
+</div>
 
-<div id="tabs" class="tabs"></div>
+<div class="view-switch">
+
+<button
+class="btn btn-primary view-btn"
+onclick="showWorkView()">
+Работа
+</button>
+
+<button
+class="btn btn-primary view-btn"
+onclick="showHistoryView()">
+История
+</button>
+
+</div>
+
+<div id="workView">
 
 <div class="card">
-<input id="newProduct" placeholder="Название товара">
-<button class="btn blue" onclick="addProduct()">
+
+<input
+id="newProduct"
+class="input"
+placeholder="Добавить товар">
+
+<button
+class="btn btn-primary"
+onclick="addProduct()">
 Добавить товар
 </button>
+
 </div>
 
 <div class="card">
-<button class="btn red" onclick="resetStore()">
-Сбросить магазин
-</button>
-</div>
 
-<div id="products"></div>
-
-<div class="card total">
-Всего нужно принести:
-<span id="total">0</span>
-</div>
-
-<script>
-
-const stores=[
-"Таир Южный",
-"Березка Аян",
-"Оптима Ермекова",
-"Южный Гармошка"
-];
-
-let currentStore=
-localStorage.getItem("currentStore") ||
-stores[0];
-
-let db=
-JSON.parse(
-localStorage.getItem("merchDB") || "{}"
-);
-
-stores.forEach(store=>{
-if(!db[store]){
-db[store]={};
-}
-});
-
-function save(){
-localStorage.setItem(
-"merchDB",
-JSON.stringify(db)
-);
-
-localStorage.setItem(
-"currentStore",
-currentStore
-);
-}
-
-function renderTabs(){
-
-let html="";
-
-stores.forEach(store=>{
-
-html+=`
-<button
-class="tab ${store===currentStore?'active':''}"
-onclick="switchStore('${store}')">
-${store}
-</button>
-`;
-
-});
-
-document.getElementById("tabs").innerHTML=
-html;
-}
-
-function switchStore(store){
-currentStore=store;
-save();
-render();
-}
-
-function addProduct(){
-
-const input=
-document.getElementById("newProduct");
-
-const name=
-input.value.trim();
-
-if(!name) return;
-
-stores.forEach(store=>{
-
-if(!db[store][name]){
-
-db[store][name]={
-count:0,
-taken:false
-};
-
-}
-
-});
-
-input.value="";
-
-save();
-render();
-}
-
-function change(product,val){
-
-db[currentStore][product].count += val;
-
-if(
-db[currentStore][product].count < 0
-){
-db[currentStore][product].count=0;
-}
-
-save();
-render();
-}
-
-function toggleTaken(product){
-
-db[currentStore][product].taken=
-!db[currentStore][product].taken;
-
-save();
-render();
-}
-
-function removeProduct(product){
-
-if(!confirm("Удалить товар?"))
-return;
-
-stores.forEach(store=>{
-delete db[store][product];
-});
-
-save();
-render();
-}
-
-function resetStore(){
-
-if(!confirm("Сбросить магазин?"))
-return;
-
-Object.keys(
-db[currentStore]
-).forEach(product=>{
-
-db[currentStore][product]={
-count:0,
-taken:false
-};
-
-});
-
-save();
-render();
-}
-
-function renderProducts(){
-
-let html="";
-let total=0;
-
-Object.keys(
-db[currentStore]
-)
-.sort()
-.forEach(product=>{
-
-const item=
-db[currentStore][product];
-
-total+=item.count;
-
-html+=`
-
-<div class="card product ${item.taken?'done':''}">
-
-<div class="name">
-${product}
-</div>
-
-<div class="controls">
+<input
+id="newTempStore"
+class="input"
+placeholder="Временный магазин на сегодня">
 
 <button
-class="btn small"
-onclick="change('${product}',-1)">
--1
-</button>
-
-<div class="counter">
-${item.count}
-</div>
-
-<button
-class="btn small blue"
-onclick="change('${product}',1)">
-+1
-</button>
-
-<button
-class="btn small green"
-onclick="change('${product}',5)">
-+5
-</button>
-
-<button
-class="btn small red"
-onclick="removeProduct('${product}')">
-🗑
+class="btn btn-primary"
+onclick="addTempStore()">
+Добавить магазин
 </button>
 
 </div>
 
-<div class="check">
+<div class="card">
+
+<input
+id="searchInput"
+class="input"
+placeholder="Поиск товара"
+oninput="renderProducts()">
+
+<select
+id="sortSelect"
+class="input"
+onchange="renderProducts()">
+
+<option value="qtyDesc">
+Количество ↓
+</option>
+
+<option value="qtyAsc">
+Количество ↑
+</option>
+
+<option value="alpha">
+По алфавиту
+</option>
+
+</select>
+
+<label>
 
 <input
 type="checkbox"
-${item.taken?'checked':''}
-onclick="toggleTaken('${product}')">
+id="onlyNeeded"
+onchange="renderProducts()">
 
-<label>
-Взято со склада
+Показывать только нужные товары
+
 </label>
 
 </div>
 
+<div class="card">
+<div id="storeTabs" class="tabs"></div>
 </div>
 
-`;
+<div id="productList"></div>
 
-});
+<div class="card">
+<div class="total-box">
+Всего нужно принести:
+<span id="totalCount">0</span>
+</div>
+</div>
 
-document.getElementById("products").innerHTML=
-html;
+</div>
 
-document.getElementById("total").textContent=
-total;
+<div
+id="historyView"
+class="hidden">
+
+<div class="card">
+
+<button
+class="btn btn-green"
+onclick="exportBackup()">
+📦 Экспорт данных
+</button>
+
+<br><br>
+
+<input
+type="file"
+id="importFile"
+onchange="importBackup(event)">
+
+</div>
+
+<div
+id="historyContainer">
+</div>
+
+</div>
+
+
+<script>
+
+const BASE_STORES = [
+    "Таир Южный",
+    "Березка Аян",
+    "Оптима Ермекова",
+    "Южный Гармошка"
+];
+
+const today = new Date().toISOString().slice(0,10);
+
+let app = JSON.parse(
+    localStorage.getItem("MERCH_TRACKER_PRO")
+    || "{}"
+);
+
+if(!app.catalog){
+    app.catalog = [];
 }
 
-function render(){
-renderTabs();
+if(!app.days){
+    app.days = {};
+}
+
+if(!app.history){
+    app.history = [];
+}
+
+if(!app.days[today]){
+
+    app.days[today] = {
+        date: today,
+        stores: {}
+    };
+
+    BASE_STORES.forEach(store=>{
+
+        app.days[today].stores[store] = {};
+
+        app.catalog.forEach(product=>{
+
+            app.days[today]
+            .stores[store][product] = {
+
+                count:0,
+                taken:false
+
+            };
+
+        });
+
+    });
+
+}
+
+let currentStore =
+Object.keys(
+app.days[today].stores
+)[0];
+
+function saveData(){
+
+    localStorage.setItem(
+        "MERCH_TRACKER_PRO",
+        JSON.stringify(app)
+    );
+
+}
+
+function updateTodayLabel(){
+
+    document.getElementById(
+        "todayLabel"
+    ).innerText =
+    "Сегодня: " +
+    new Date().toLocaleDateString(
+        "ru-RU"
+    );
+
+}
+
+function showWorkView(){
+
+    document
+    .getElementById("workView")
+    .classList
+    .remove("hidden");
+
+    document
+    .getElementById("historyView")
+    .classList
+    .add("hidden");
+
+}
+
+function showHistoryView(){
+
+    document
+    .getElementById("workView")
+    .classList
+    .add("hidden");
+
+    document
+    .getElementById("historyView")
+    .classList
+    .remove("hidden");
+
+    renderHistory();
+
+}
+
+function ensureProductEverywhere(
+    product
+){
+
+    Object.values(
+        app.days
+    ).forEach(day=>{
+
+        Object.values(
+            day.stores
+        ).forEach(store=>{
+
+            if(
+                !store[product]
+            ){
+
+                store[product]={
+                    count:0,
+                    taken:false
+                };
+
+            }
+
+        });
+
+    });
+
+}
+
+function addProduct(){
+
+    const input =
+    document.getElementById(
+        "newProduct"
+    );
+
+    const product =
+    input.value.trim();
+
+    if(!product){
+        return;
+    }
+
+    if(
+        app.catalog.includes(
+            product
+        )
+    ){
+        return;
+    }
+
+    app.catalog.push(product);
+
+    ensureProductEverywhere(
+        product
+    );
+
+    input.value = "";
+
+    saveData();
+
+    renderProducts();
+
+}
+
+function addTempStore(){
+
+    const input =
+    document.getElementById(
+        "newTempStore"
+    );
+
+    const store =
+    input.value.trim();
+
+    if(!store){
+        return;
+    }
+
+    if(
+        app.days[today]
+        .stores[store]
+    ){
+        return;
+    }
+
+    app.days[today]
+    .stores[store] = {};
+
+    app.catalog.forEach(
+        product=>{
+
+        app.days[today]
+        .stores[store]
+        [product] = {
+
+            count:0,
+            taken:false
+
+        };
+
+    });
+
+    input.value = "";
+
+    saveData();
+
+    renderStores();
+
+}
+
+function renderStores(){
+
+    let html = "";
+
+    Object.keys(
+        app.days[today]
+        .stores
+    ).forEach(store=>{
+
+        html += `
+        <button
+        class="tab ${
+            store===currentStore
+            ? "active"
+            : ""
+        }"
+        onclick="
+        switchStore(
+        '${store}'
+        )">
+        ${store}
+        </button>
+        `;
+
+    });
+
+    document
+    .getElementById(
+        "storeTabs"
+    ).innerHTML = html;
+
+}
+
+function switchStore(
+    store
+){
+
+    currentStore = store;
+
+    renderStores();
+    renderProducts();
+
+}
+
+function changeCount(
+    product,
+    value
+){
+
+    const item =
+    app.days[today]
+    .stores[currentStore]
+    [product];
+
+    item.count += value;
+
+    if(
+        item.count < 0
+    ){
+        item.count = 0;
+    }
+
+    saveData();
+
+    renderProducts();
+
+}
+
+function toggleTaken(
+    product
+){
+
+    const item =
+    app.days[today]
+    .stores[currentStore]
+    [product];
+
+    item.taken =
+    !item.taken;
+
+    saveData();
+
+    renderProducts();
+
+}
+
+
+function renderProducts(){
+
+    const search =
+    document
+    .getElementById(
+        "searchInput"
+    )
+    .value
+    .toLowerCase();
+
+    const onlyNeeded =
+    document
+    .getElementById(
+        "onlyNeeded"
+    )
+    .checked;
+
+    const sort =
+    document
+    .getElementById(
+        "sortSelect"
+    )
+    .value;
+
+    let products =
+    [...app.catalog];
+
+    products =
+    products.filter(
+        product =>
+        product
+        .toLowerCase()
+        .includes(search)
+    );
+
+    if(onlyNeeded){
+
+        products =
+        products.filter(
+            product =>
+
+            app.days[today]
+            .stores[currentStore]
+            [product]
+            .count > 0
+
+        );
+
+    }
+
+    if(sort==="alpha"){
+
+        products.sort();
+
+    }
+
+    if(sort==="qtyDesc"){
+
+        products.sort(
+        (a,b)=>
+
+        app.days[today]
+        .stores[currentStore]
+        [b].count
+
+        -
+
+        app.days[today]
+        .stores[currentStore]
+        [a].count
+
+        );
+
+    }
+
+    if(sort==="qtyAsc"){
+
+        products.sort(
+        (a,b)=>
+
+        app.days[today]
+        .stores[currentStore]
+        [a].count
+
+        -
+
+        app.days[today]
+        .stores[currentStore]
+        [b].count
+
+        );
+
+    }
+
+    let html = "";
+    let total = 0;
+
+    products.forEach(
+    product=>{
+
+        const item =
+        app.days[today]
+        .stores[currentStore]
+        [product];
+
+        total += item.count;
+
+        html += `
+
+        <div class="
+        product
+        ${item.taken ? 'done' : ''}
+        ">
+
+        <div class="
+        product-name
+        ">
+        ${product}
+        </div>
+
+        <div class="
+        counter-row
+        ">
+
+        <button
+        class="small-btn"
+        onclick="
+        changeCount(
+        '${product}',
+        -1
+        )">
+        -1
+        </button>
+
+        <div
+        class="counter">
+        ${item.count}
+        </div>
+
+        <button
+        class="small-btn"
+        onclick="
+        changeCount(
+        '${product}',
+        1
+        )">
+        +1
+        </button>
+
+        <button
+        class="small-btn"
+        onclick="
+        changeCount(
+        '${product}',
+        5
+        )">
+        +5
+        </button>
+
+        <button
+        class="small-btn"
+        onclick="
+        changeCount(
+        '${product}',
+        10
+        )">
+        +10
+        </button>
+
+        </div>
+
+        <button
+        class="
+        btn
+        ${
+            item.taken
+            ?
+            'btn-green'
+            :
+            'btn-red'
+        }
+        "
+        onclick="
+        toggleTaken(
+        '${product}'
+        )">
+
+        ${
+            item.taken
+            ?
+            '🟢 Взято'
+            :
+            '🔴 Не взято'
+        }
+
+        </button>
+
+        </div>
+
+        `;
+
+    });
+
+    document
+    .getElementById(
+        "productList"
+    )
+    .innerHTML = html;
+
+    document
+    .getElementById(
+        "totalCount"
+    )
+    .innerText = total;
+
+}
+
+function exportBackup(){
+
+    const data =
+    JSON.stringify(
+        app,
+        null,
+        2
+    );
+
+    const blob =
+    new Blob(
+        [data],
+        {
+            type:
+            'application/json'
+        }
+    );
+
+    const a =
+    document
+    .createElement('a');
+
+    a.href =
+    URL
+    .createObjectURL(
+        blob
+    );
+
+    a.download =
+    'merch_backup.json';
+
+    a.click();
+
+}
+
+function importBackup(
+    event
+){
+
+    const file =
+    event.target.files[0];
+
+    if(!file){
+        return;
+    }
+
+    const reader =
+    new FileReader();
+
+    reader.onload =
+    function(e){
+
+        app =
+        JSON.parse(
+            e.target.result
+        );
+
+        saveData();
+
+        location.reload();
+
+    };
+
+    reader.readAsText(
+        file
+    );
+
+}
+
+function renderHistory(){
+
+    let html = "";
+
+    app.history
+    .slice()
+    .reverse()
+    .forEach(day=>{
+
+        let content = "";
+
+        Object
+        .entries(
+            day.stores
+        )
+        .forEach(
+        ([store,items])=>{
+
+            content +=
+            `<h4>${store}</h4>`;
+
+            Object
+            .entries(items)
+            .forEach(
+            ([product,count])=>{
+
+                content += `
+                ${product}
+                —
+                ${count}
+                <br>
+                `;
+
+            });
+
+        });
+
+        html += `
+
+        <details
+        class="
+        calendar-date
+        ">
+
+        <summary>
+        ${day.date}
+        </summary>
+
+        ${content}
+
+        </details>
+
+        `;
+
+    });
+
+    document
+    .getElementById(
+        "historyContainer"
+    )
+    .innerHTML = html;
+
+}
+
+function saveDay(){
+
+    const snapshot = {
+
+        date:
+        new Date()
+        .toLocaleDateString(
+            'ru-RU'
+        ),
+
+        stores:{}
+
+    };
+
+    Object
+    .entries(
+        app.days[today]
+        .stores
+    )
+    .forEach(
+    ([store,items])=>{
+
+        const filtered =
+        {};
+
+        Object
+        .entries(items)
+        .forEach(
+        ([product,data])=>{
+
+            if(
+                data.count > 0
+            ){
+
+                filtered[
+                    product
+                ] =
+                data.count;
+
+            }
+
+        });
+
+        if(
+        Object.keys(
+            filtered
+        ).length
+        ){
+
+            snapshot
+            .stores[
+                store
+            ] = filtered;
+
+        }
+
+    });
+
+    app.history.push(
+        snapshot
+    );
+
+    saveData();
+
+    alert(
+    'День сохранен'
+    );
+
+}
+
+updateTodayLabel();
+renderStores();
 renderProducts();
-}
-
-render();
 
 </script>
 
