@@ -2,205 +2,400 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Мерчендайзер</title>
 
 <style>
-body{
-    font-family:Arial,sans-serif;
-    margin:0;
-    padding:15px;
-    background:#f5f5f5;
+*{
+box-sizing:border-box;
+margin:0;
+padding:0;
+font-family:-apple-system,BlinkMacSystemFont,sans-serif;
 }
 
-.shop{
-    width:100%;
-    padding:15px;
-    margin-bottom:8px;
-    border:none;
-    border-radius:12px;
-    font-size:18px;
+body{
+background:#f4f4f4;
+padding:15px;
+max-width:900px;
+margin:auto;
+}
+
+h1{
+font-size:24px;
+margin-bottom:15px;
+}
+
+.tabs{
+display:flex;
+gap:8px;
+overflow-x:auto;
+margin-bottom:15px;
+}
+
+.tab{
+border:none;
+padding:12px;
+border-radius:12px;
+background:white;
+cursor:pointer;
+white-space:nowrap;
 }
 
 .active{
-    background:#dbeafe;
+background:#0a84ff;
+color:white;
 }
 
 .card{
-    background:white;
-    border-radius:12px;
-    padding:15px;
-    margin-top:15px;
+background:white;
+border-radius:16px;
+padding:12px;
+margin-bottom:12px;
+box-shadow:0 2px 8px rgba(0,0,0,.08);
 }
 
-.row{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    margin:10px 0;
-}
-
-.name{
-    flex:1;
-}
-
-.counter{
-    min-width:35px;
-    text-align:center;
-    font-weight:bold;
+input{
+width:100%;
+padding:12px;
+border:1px solid #ddd;
+border-radius:12px;
+margin-bottom:8px;
+font-size:16px;
 }
 
 .btn{
-    width:40px;
-    height:40px;
-    font-size:20px;
+border:none;
+border-radius:12px;
+padding:12px;
+cursor:pointer;
+}
+
+.blue{
+background:#0a84ff;
+color:white;
+}
+
+.red{
+background:#ff3b30;
+color:white;
+}
+
+.green{
+background:#34c759;
+color:white;
+}
+
+.product{
+padding:12px;
+border-bottom:1px solid #eee;
+}
+
+.product:last-child{
+border-bottom:none;
+}
+
+.product.done{
+background:#e8ffe8;
+border-radius:12px;
+}
+
+.name{
+font-weight:600;
+margin-bottom:10px;
+}
+
+.controls{
+display:flex;
+align-items:center;
+gap:6px;
+flex-wrap:wrap;
+}
+
+.counter{
+font-size:20px;
+font-weight:700;
+width:45px;
+text-align:center;
+}
+
+.small{
+padding:8px 10px;
+}
+
+.total{
+font-size:20px;
+font-weight:bold;
+text-align:center;
+padding:15px;
+}
+
+.check{
+margin-top:10px;
+display:flex;
+align-items:center;
+gap:8px;
 }
 </style>
 </head>
 
 <body>
 
-<h2>Товары на выкладку</h2>
+<h1>Товары на выкладку</h1>
 
-<div id="shops"></div>
+<div id="tabs" class="tabs"></div>
 
 <div class="card">
-<input id="newProduct" placeholder="Добавить товар">
-<button onclick="addProduct()">Добавить</button>
+<input id="newProduct" placeholder="Название товара">
+<button class="btn blue" onclick="addProduct()">
+Добавить товар
+</button>
 </div>
 
 <div class="card">
+<button class="btn red" onclick="resetStore()">
+Сбросить магазин
+</button>
+</div>
+
 <div id="products"></div>
+
+<div class="card total">
+Всего нужно принести:
+<span id="total">0</span>
 </div>
 
 <script>
 
-const stores = [
+const stores=[
 "Таир Южный",
 "Березка Аян",
 "Оптима Ермекова",
 "Южный Гармошка"
 ];
 
-let currentStore =
-localStorage.getItem("currentStore") || stores[0];
+let currentStore=
+localStorage.getItem("currentStore") ||
+stores[0];
 
-let db =
-JSON.parse(localStorage.getItem("merchDB") || "{}");
+let db=
+JSON.parse(
+localStorage.getItem("merchDB") || "{}"
+);
 
 stores.forEach(store=>{
-    if(!db[store]) db[store]={};
+if(!db[store]){
+db[store]={};
+}
 });
 
 function save(){
-    localStorage.setItem(
-        "merchDB",
-        JSON.stringify(db)
-    );
+localStorage.setItem(
+"merchDB",
+JSON.stringify(db)
+);
 
-    localStorage.setItem(
-        "currentStore",
-        currentStore
-    );
+localStorage.setItem(
+"currentStore",
+currentStore
+);
 }
 
-function renderStores(){
+function renderTabs(){
 
-    let html="";
+let html="";
 
-    stores.forEach(store=>{
+stores.forEach(store=>{
 
-        html+=`
-        <button
-        class="shop ${store===currentStore?"active":""}"
-        onclick="selectStore('${store}')">
-        ${store}
-        </button>
-        `;
+html+=`
+<button
+class="tab ${store===currentStore?'active':''}"
+onclick="switchStore('${store}')">
+${store}
+</button>
+`;
 
-    });
+});
 
-    document.getElementById("shops").innerHTML=html;
+document.getElementById("tabs").innerHTML=
+html;
 }
 
-function selectStore(store){
-    currentStore=store;
-    save();
-    render();
+function switchStore(store){
+currentStore=store;
+save();
+render();
 }
 
 function addProduct(){
 
-    let product =
-    document.getElementById("newProduct")
-    .value
-    .trim();
+const input=
+document.getElementById("newProduct");
 
-    if(!product) return;
+const name=
+input.value.trim();
 
-    stores.forEach(store=>{
+if(!name) return;
 
-        if(db[store][product]===undefined)
-            db[store][product]=0;
+stores.forEach(store=>{
 
-    });
+if(!db[store][name]){
 
-    document.getElementById("newProduct").value="";
+db[store][name]={
+count:0,
+taken:false
+};
 
-    save();
-    render();
 }
 
-function change(product,value){
+});
 
-    db[currentStore][product]+=value;
+input.value="";
 
-    if(db[currentStore][product]<0)
-        db[currentStore][product]=0;
+save();
+render();
+}
 
-    save();
-    render();
+function change(product,val){
+
+db[currentStore][product].count += val;
+
+if(
+db[currentStore][product].count < 0
+){
+db[currentStore][product].count=0;
+}
+
+save();
+render();
+}
+
+function toggleTaken(product){
+
+db[currentStore][product].taken=
+!db[currentStore][product].taken;
+
+save();
+render();
+}
+
+function removeProduct(product){
+
+if(!confirm("Удалить товар?"))
+return;
+
+stores.forEach(store=>{
+delete db[store][product];
+});
+
+save();
+render();
+}
+
+function resetStore(){
+
+if(!confirm("Сбросить магазин?"))
+return;
+
+Object.keys(
+db[currentStore]
+).forEach(product=>{
+
+db[currentStore][product]={
+count:0,
+taken:false
+};
+
+});
+
+save();
+render();
 }
 
 function renderProducts(){
 
-    let html="";
+let html="";
+let total=0;
 
-    Object.keys(db[currentStore])
-    .sort()
-    .forEach(product=>{
+Object.keys(
+db[currentStore]
+)
+.sort()
+.forEach(product=>{
 
-        html+=`
-        <div class="row">
+const item=
+db[currentStore][product];
 
-            <div class="name">
-                ${product}
-            </div>
+total+=item.count;
 
-            <button class="btn"
-            onclick="change('${product}',-1)">
-            -
-            </button>
+html+=`
 
-            <div class="counter">
-                ${db[currentStore][product]}
-            </div>
+<div class="card product ${item.taken?'done':''}">
 
-            <button class="btn"
-            onclick="change('${product}',1)">
-            +
-            </button>
+<div class="name">
+${product}
+</div>
 
-        </div>
-        `;
-    });
+<div class="controls">
 
-    document.getElementById("products").innerHTML=html;
+<button
+class="btn small"
+onclick="change('${product}',-1)">
+-1
+</button>
+
+<div class="counter">
+${item.count}
+</div>
+
+<button
+class="btn small blue"
+onclick="change('${product}',1)">
++1
+</button>
+
+<button
+class="btn small green"
+onclick="change('${product}',5)">
++5
+</button>
+
+<button
+class="btn small red"
+onclick="removeProduct('${product}')">
+🗑
+</button>
+
+</div>
+
+<div class="check">
+
+<input
+type="checkbox"
+${item.taken?'checked':''}
+onclick="toggleTaken('${product}')">
+
+<label>
+Взято со склада
+</label>
+
+</div>
+
+</div>
+
+`;
+
+});
+
+document.getElementById("products").innerHTML=
+html;
+
+document.getElementById("total").textContent=
+total;
 }
 
 function render(){
-    renderStores();
-    renderProducts();
+renderTabs();
+renderProducts();
 }
 
 render();
