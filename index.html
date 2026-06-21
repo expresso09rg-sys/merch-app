@@ -6,7 +6,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>Merch Tracker Pro</title>
+<title>Merch Tracker 2.0</title>
 
 <link rel="manifest" href="manifest.json">
 
@@ -24,6 +24,7 @@
 --primary:#f59e0b;
 --green:#22c55e;
 --red:#ef4444;
+--blue:#3b82f6;
 --bg:#f3f4f6;
 --card:#ffffff;
 --text:#111827;
@@ -40,64 +41,43 @@ body{
 background:var(--bg);
 color:var(--text);
 padding:12px;
+padding-bottom:90px;
 max-width:900px;
 margin:auto;
 }
 
 .header{
-background:var(--card);
+background:white;
 padding:16px;
-border-radius:16px;
-margin-bottom:12px;
+border-radius:18px;
 box-shadow:0 2px 10px rgba(0,0,0,.08);
+margin-bottom:12px;
 }
 
 .title{
-font-size:24px;
+font-size:26px;
 font-weight:700;
 }
 
 .subtitle{
 margin-top:6px;
-color:#666;
 font-size:14px;
+color:#666;
 }
 
 .card{
-background:var(--card);
-padding:12px;
-border-radius:16px;
-margin-bottom:12px;
+background:white;
+padding:14px;
+border-radius:18px;
 box-shadow:0 2px 10px rgba(0,0,0,.08);
-}
-
-.tabs{
-display:flex;
-gap:8px;
-overflow-x:auto;
-padding-bottom:4px;
-}
-
-.tab{
-border:none;
-padding:10px 14px;
-border-radius:12px;
-background:#e5e7eb;
-white-space:nowrap;
-font-weight:600;
-cursor:pointer;
-}
-
-.tab.active{
-background:var(--primary);
-color:white;
+margin-bottom:12px;
 }
 
 .input{
 width:100%;
-padding:12px;
+padding:14px;
 border:1px solid #ddd;
-border-radius:12px;
+border-radius:14px;
 font-size:16px;
 margin-bottom:8px;
 }
@@ -105,8 +85,9 @@ margin-bottom:8px;
 .btn{
 border:none;
 padding:12px;
-border-radius:12px;
-font-weight:600;
+border-radius:14px;
+font-size:15px;
+font-weight:700;
 cursor:pointer;
 }
 
@@ -125,22 +106,38 @@ background:var(--red);
 color:white;
 }
 
-.row{
-display:flex;
-gap:8px;
-flex-wrap:wrap;
+.btn-blue{
+background:var(--blue);
+color:white;
 }
 
-.row .btn{
-flex:1;
+.tabs{
+display:flex;
+gap:8px;
+overflow-x:auto;
+}
+
+.tab{
+border:none;
+padding:12px 16px;
+border-radius:14px;
+background:#e5e7eb;
+font-weight:700;
+white-space:nowrap;
+cursor:pointer;
+}
+
+.tab.active{
+background:var(--primary);
+color:white;
 }
 
 .product{
 background:white;
-border-radius:14px;
-padding:12px;
+padding:14px;
+border-radius:18px;
 margin-bottom:10px;
-border:1px solid #eee;
+box-shadow:0 2px 10px rgba(0,0,0,.06);
 }
 
 .product.done{
@@ -149,64 +146,87 @@ background:#e8ffe8;
 
 .product-name{
 font-weight:700;
-margin-bottom:10px;
-font-size:16px;
+font-size:18px;
+margin-bottom:12px;
 }
 
 .counter-row{
 display:flex;
-align-items:center;
 gap:6px;
-margin-bottom:8px;
+align-items:center;
+margin-bottom:10px;
 }
 
 .counter{
-min-width:50px;
+min-width:60px;
 text-align:center;
-font-size:22px;
+font-size:24px;
 font-weight:700;
 }
 
 .small-btn{
-padding:10px;
 border:none;
-border-radius:10px;
+padding:10px;
+border-radius:12px;
 font-weight:700;
 cursor:pointer;
 }
 
 .total-box{
-font-size:22px;
-font-weight:700;
 text-align:center;
-}
-
-.history-item{
-padding:10px;
-border-bottom:1px solid #eee;
+font-size:24px;
+font-weight:700;
 }
 
 .hidden{
 display:none;
 }
 
-.view-switch{
+.bottom-nav{
+position:fixed;
+bottom:0;
+left:0;
+right:0;
+background:white;
+padding:10px;
 display:flex;
-gap:8px;
-margin-bottom:12px;
+gap:10px;
+box-shadow:0 -2px 10px rgba(0,0,0,.08);
 }
 
-.view-btn{
+.nav-btn{
 flex:1;
 }
 
-.calendar-date{
+.calendar{
+display:grid;
+grid-template-columns:repeat(7,1fr);
+gap:6px;
+}
+
+.day{
+background:white;
 padding:12px;
 border-radius:12px;
-background:#f5f5f5;
-margin-bottom:8px;
+text-align:center;
 cursor:pointer;
-font-weight:600;
+}
+
+.day.saved{
+background:#f59e0b;
+color:white;
+font-weight:700;
+}
+
+.history-details{
+margin-top:12px;
+}
+
+.store-block{
+margin-bottom:12px;
+padding:10px;
+background:#fafafa;
+border-radius:12px;
 }
 
 </style>
@@ -216,32 +236,25 @@ font-weight:600;
 <body>
 
 <div class="header">
-<div class="title">🍺 Merch Tracker Pro</div>
-<div class="subtitle" id="todayLabel"></div>
+
+<div class="title">
+🍺 Merch Tracker 2.0
 </div>
 
-<div class="view-switch">
-
-<button
-class="btn btn-primary view-btn"
-onclick="showWorkView()">
-Работа
-</button>
-
-<button
-class="btn btn-primary view-btn"
-onclick="showHistoryView()">
-История
-</button>
+<div
+class="subtitle"
+id="todayLabel">
+</div>
 
 </div>
 
-<div id="workView">
+<div
+id="workScreen">
 
 <div class="card">
 
 <input
-id="newProduct"
+id="productInput"
 class="input"
 placeholder="Добавить товар">
 
@@ -256,12 +269,12 @@ onclick="addProduct()">
 <div class="card">
 
 <input
-id="newTempStore"
+id="tempStoreInput"
 class="input"
-placeholder="Временный магазин на сегодня">
+placeholder="Добавить магазин на сегодня">
 
 <button
-class="btn btn-primary"
+class="btn btn-blue"
 onclick="addTempStore()">
 Добавить магазин
 </button>
@@ -273,13 +286,11 @@ onclick="addTempStore()">
 <input
 id="searchInput"
 class="input"
-placeholder="Поиск товара"
-oninput="renderProducts()">
+placeholder="Поиск товара">
 
 <select
 id="sortSelect"
-class="input"
-onchange="renderProducts()">
+class="input">
 
 <option value="qtyDesc">
 Количество ↓
@@ -299,57 +310,84 @@ onchange="renderProducts()">
 
 <input
 type="checkbox"
-id="onlyNeeded"
-onchange="renderProducts()">
+id="onlyNeeded">
 
-Показывать только нужные товары
+Только нужные товары
 
 </label>
 
 </div>
 
 <div class="card">
-<div id="storeTabs" class="tabs"></div>
-</div>
 
-<div id="productList"></div>
-
-<div class="card">
-<div class="total-box">
-Всего нужно принести:
-<span id="totalCount">0</span>
-</div>
+<div
+id="storeTabs"
+class="tabs">
 </div>
 
 </div>
 
 <div
-id="historyView"
+id="productList">
+</div>
+
+<div class="card">
+
+<div
+class="total-box">
+
+Всего нужно принести:
+
+<span
+id="totalCount">
+
+0
+
+</span>
+
+</div>
+
+</div>
+
+</div>
+
+<div
+id="historyScreen"
 class="hidden">
 
 <div class="card">
 
-<button
-class="btn btn-green"
-onclick="exportBackup()">
-📦 Экспорт данных
-</button>
-
-<br><br>
-
-<input
-type="file"
-id="importFile"
-onchange="importBackup(event)">
+<div
+id="calendar">
+</div>
 
 </div>
 
 <div
-id="historyContainer">
+id="historyContent">
 </div>
 
 </div>
 
+<div class="bottom-nav">
+
+<button
+class="btn btn-primary nav-btn"
+onclick="showWorkScreen()">
+
+Работа
+
+</button>
+
+<button
+class="btn btn-primary nav-btn"
+onclick="showHistoryScreen()">
+
+История
+
+</button>
+
+</div>
 
 <script>
 
@@ -360,40 +398,47 @@ const BASE_STORES = [
     "Южный Гармошка"
 ];
 
-const today = new Date().toISOString().slice(0,10);
+const today =
+new Date()
+.toISOString()
+.slice(0,10);
 
-let app = JSON.parse(
-    localStorage.getItem("MERCH_TRACKER_PRO")
-    || "{}"
+let app =
+JSON.parse(
+localStorage.getItem(
+"MERCH_TRACKER_2"
+) || "{}"
 );
 
-if(!app.catalog){
-    app.catalog = [];
-}
+if(!app.catalog)
+app.catalog = [];
 
-if(!app.days){
-    app.days = {};
-}
+if(!app.days)
+app.days = {};
 
-if(!app.history){
-    app.history = [];
-}
+if(!app.history)
+app.history = [];
 
 if(!app.days[today]){
 
     app.days[today] = {
-        date: today,
-        stores: {}
+
+        stores:{}
+
     };
 
-    BASE_STORES.forEach(store=>{
+    BASE_STORES.forEach(
+    store=>{
 
-        app.days[today].stores[store] = {};
+        app.days[today]
+        .stores[store] = {};
 
-        app.catalog.forEach(product=>{
+        app.catalog.forEach(
+        product=>{
 
             app.days[today]
-            .stores[store][product] = {
+            .stores[store]
+            [product] = {
 
                 count:0,
                 taken:false
@@ -408,681 +453,969 @@ if(!app.days[today]){
 
 let currentStore =
 Object.keys(
-app.days[today].stores
+app.days[today]
+.stores
 )[0];
 
 function saveData(){
 
     localStorage.setItem(
-        "MERCH_TRACKER_PRO",
-        JSON.stringify(app)
+    "MERCH_TRACKER_2",
+    JSON.stringify(app)
     );
 
 }
 
-function updateTodayLabel(){
+function updateHeader(){
 
-    document.getElementById(
-        "todayLabel"
-    ).innerText =
+    document
+    .getElementById(
+    "todayLabel"
+    )
+    .innerHTML =
+
     "Сегодня: " +
-    new Date().toLocaleDateString(
-        "ru-RU"
+
+    new Date()
+    .toLocaleDateString(
+    "ru-RU"
     );
 
 }
 
-function showWorkView(){
+function showWorkScreen(){
 
     document
-    .getElementById("workView")
+    .getElementById(
+    "workScreen"
+    )
     .classList
-    .remove("hidden");
+    .remove(
+    "hidden"
+    );
 
     document
-    .getElementById("historyView")
+    .getElementById(
+    "historyScreen"
+    )
     .classList
-    .add("hidden");
+    .add(
+    "hidden"
+    );
 
 }
 
-function showHistoryView(){
+function showHistoryScreen(){
 
     document
-    .getElementById("workView")
+    .getElementById(
+    "workScreen"
+    )
     .classList
-    .add("hidden");
+    .add(
+    "hidden"
+    );
 
     document
-    .getElementById("historyView")
+    .getElementById(
+    "historyScreen"
+    )
     .classList
-    .remove("hidden");
+    .remove(
+    "hidden"
+    );
 
-    renderHistory();
+    renderCalendar();
 
 }
 
 function ensureProductEverywhere(
-    product
+product
 ){
 
-    Object.values(
-        app.days
-    ).forEach(day=>{
+Object.values(
+app.days
+)
+.forEach(day=>{
 
-        Object.values(
-            day.stores
-        ).forEach(store=>{
+Object.values(
+day.stores
+)
+.forEach(store=>{
 
-            if(
-                !store[product]
-            ){
+if(
+!store[product]
+){
 
-                store[product]={
-                    count:0,
-                    taken:false
-                };
+store[product] = {
 
-            }
+count:0,
+taken:false
 
-        });
+};
 
-    });
+}
+
+});
+
+});
 
 }
 
 function addProduct(){
 
-    const input =
-    document.getElementById(
-        "newProduct"
-    );
+const input =
+document
+.getElementById(
+"productInput"
+);
 
-    const product =
-    input.value.trim();
+const product =
+input.value.trim();
 
-    if(!product){
-        return;
-    }
+if(!product)
+return;
 
-    if(
-        app.catalog.includes(
-            product
-        )
-    ){
-        return;
-    }
+if(
+app.catalog.includes(
+product
+)
+)
+return;
 
-    app.catalog.push(product);
+app.catalog.push(
+product
+);
 
-    ensureProductEverywhere(
-        product
-    );
+ensureProductEverywhere(
+product
+);
 
-    input.value = "";
+input.value = "";
 
-    saveData();
+saveData();
 
-    renderProducts();
+renderProducts();
+
+}
+
+function deleteProduct(
+product
+){
+
+if(
+!confirm(
+"Удалить товар?"
+)
+)
+return;
+
+app.catalog =
+app.catalog.filter(
+p =>
+p !== product
+);
+
+Object.values(
+app.days
+)
+.forEach(day=>{
+
+Object.values(
+day.stores
+)
+.forEach(store=>{
+
+delete store[
+product
+];
+
+});
+
+});
+
+saveData();
+
+renderProducts();
 
 }
 
 function addTempStore(){
 
-    const input =
-    document.getElementById(
-        "newTempStore"
-    );
+const input =
+document
+.getElementById(
+"tempStoreInput"
+);
 
-    const store =
-    input.value.trim();
+const store =
+input.value.trim();
 
-    if(!store){
-        return;
-    }
+if(!store)
+return;
 
-    if(
-        app.days[today]
-        .stores[store]
-    ){
-        return;
-    }
+if(
+app.days[today]
+.stores[store]
+)
+return;
 
-    app.days[today]
-    .stores[store] = {};
+app.days[today]
+.stores[store] = {};
 
-    app.catalog.forEach(
-        product=>{
+app.catalog.forEach(
+product=>{
 
-        app.days[today]
-        .stores[store]
-        [product] = {
+app.days[today]
+.stores[store]
+[product] = {
 
-            count:0,
-            taken:false
+count:0,
+taken:false
 
-        };
+};
 
-    });
+});
 
-    input.value = "";
+input.value = "";
 
-    saveData();
+saveData();
 
-    renderStores();
+renderStores();
+
+}
+
+function deleteStore(
+store
+){
+
+if(
+BASE_STORES.includes(
+store
+)
+){
+
+alert(
+"Основной магазин удалить нельзя"
+);
+
+return;
+
+}
+
+if(
+!confirm(
+"Удалить магазин?"
+)
+)
+return;
+
+delete
+app.days[today]
+.stores[store];
+
+currentStore =
+Object.keys(
+app.days[today]
+.stores
+)[0];
+
+saveData();
+
+renderStores();
+renderProducts();
 
 }
 
 function renderStores(){
 
-    let html = "";
+let html = "";
 
-    Object.keys(
-        app.days[today]
-        .stores
-    ).forEach(store=>{
+Object.keys(
+app.days[today]
+.stores
+)
+.forEach(store=>{
 
-        html += `
-        <button
-        class="tab ${
-            store===currentStore
-            ? "active"
-            : ""
-        }"
-        onclick="
-        switchStore(
-        '${store}'
-        )">
-        ${store}
-        </button>
-        `;
+html += `
 
-    });
+<div
+style="
+display:flex;
+gap:6px;
+align-items:center;
+">
 
-    document
-    .getElementById(
-        "storeTabs"
-    ).innerHTML = html;
+<button
+
+class="tab
+${store===currentStore
+?
+'active'
+:
+''
+}"
+
+onclick="
+switchStore(
+'${store}'
+)
+">
+
+${store}
+
+</button>
+
+${
+!BASE_STORES.includes(
+store
+)
+
+?
+
+`
+
+<button
+
+class="
+btn
+btn-red
+"
+
+onclick="
+deleteStore(
+'${store}'
+)
+">
+
+🗑
+
+</button>
+
+`
+
+:
+
+''
+
+}
+
+</div>
+
+`;
+
+});
+
+document
+.getElementById(
+"storeTabs"
+)
+.innerHTML = html;
 
 }
 
 function switchStore(
-    store
+store
 ){
 
-    currentStore = store;
+currentStore =
+store;
 
-    renderStores();
-    renderProducts();
+renderStores();
+renderProducts();
 
 }
 
 function changeCount(
-    product,
-    value
+product,
+value
 ){
 
-    const item =
-    app.days[today]
-    .stores[currentStore]
-    [product];
+const item =
+app.days[today]
+.stores[currentStore]
+[product];
 
-    item.count += value;
+item.count += value;
 
-    if(
-        item.count < 0
-    ){
-        item.count = 0;
-    }
+if(
+item.count < 0
+){
+item.count = 0;
+}
 
-    saveData();
+saveData();
 
-    renderProducts();
+renderProducts();
 
 }
 
 function toggleTaken(
-    product
+product
 ){
 
-    const item =
-    app.days[today]
-    .stores[currentStore]
-    [product];
+const item =
+app.days[today]
+.stores[currentStore]
+[product];
 
-    item.taken =
-    !item.taken;
+item.taken =
+!item.taken;
 
-    saveData();
+saveData();
 
-    renderProducts();
+renderProducts();
 
 }
-
 
 function renderProducts(){
 
-    const search =
-    document
-    .getElementById(
-        "searchInput"
-    )
-    .value
-    .toLowerCase();
+const search =
+document
+.getElementById(
+"searchInput"
+)
+.value
+.toLowerCase();
 
-    const onlyNeeded =
-    document
-    .getElementById(
-        "onlyNeeded"
-    )
-    .checked;
+const onlyNeeded =
+document
+.getElementById(
+"onlyNeeded"
+)
+.checked;
 
-    const sort =
-    document
-    .getElementById(
-        "sortSelect"
-    )
-    .value;
+const sort =
+document
+.getElementById(
+"sortSelect"
+)
+.value;
 
-    let products =
-    [...app.catalog];
+let products =
+[...app.catalog];
 
-    products =
-    products.filter(
-        product =>
-        product
-        .toLowerCase()
-        .includes(search)
-    );
+products =
+products.filter(
+product=>
+product
+.toLowerCase()
+.includes(
+search
+)
+);
 
-    if(onlyNeeded){
-
-        products =
-        products.filter(
-            product =>
-
-            app.days[today]
-            .stores[currentStore]
-            [product]
-            .count > 0
-
-        );
-
-    }
-
-    if(sort==="alpha"){
-
-        products.sort();
-
-    }
-
-    if(sort==="qtyDesc"){
-
-        products.sort(
-        (a,b)=>
-
-        app.days[today]
-        .stores[currentStore]
-        [b].count
-
-        -
-
-        app.days[today]
-        .stores[currentStore]
-        [a].count
-
-        );
-
-    }
-
-    if(sort==="qtyAsc"){
-
-        products.sort(
-        (a,b)=>
-
-        app.days[today]
-        .stores[currentStore]
-        [a].count
-
-        -
-
-        app.days[today]
-        .stores[currentStore]
-        [b].count
-
-        );
-
-    }
-
-    let html = "";
-    let total = 0;
-
-    products.forEach(
-    product=>{
-
-        const item =
-        app.days[today]
-        .stores[currentStore]
-        [product];
-
-        total += item.count;
-
-        html += `
-
-        <div class="
-        product
-        ${item.taken ? 'done' : ''}
-        ">
-
-        <div class="
-        product-name
-        ">
-        ${product}
-        </div>
-
-        <div class="
-        counter-row
-        ">
-
-        <button
-        class="small-btn"
-        onclick="
-        changeCount(
-        '${product}',
-        -1
-        )">
-        -1
-        </button>
-
-        <div
-        class="counter">
-        ${item.count}
-        </div>
-
-        <button
-        class="small-btn"
-        onclick="
-        changeCount(
-        '${product}',
-        1
-        )">
-        +1
-        </button>
-
-        <button
-        class="small-btn"
-        onclick="
-        changeCount(
-        '${product}',
-        5
-        )">
-        +5
-        </button>
-
-        <button
-        class="small-btn"
-        onclick="
-        changeCount(
-        '${product}',
-        10
-        )">
-        +10
-        </button>
-
-        </div>
-
-        <button
-        class="
-        btn
-        ${
-            item.taken
-            ?
-            'btn-green'
-            :
-            'btn-red'
-        }
-        "
-        onclick="
-        toggleTaken(
-        '${product}'
-        )">
-
-        ${
-            item.taken
-            ?
-            '🟢 Взято'
-            :
-            '🔴 Не взято'
-        }
-
-        </button>
-
-        </div>
-
-        `;
-
-    });
-
-    document
-    .getElementById(
-        "productList"
-    )
-    .innerHTML = html;
-
-    document
-    .getElementById(
-        "totalCount"
-    )
-    .innerText = total;
-
-}
-
-function exportBackup(){
-
-    const data =
-    JSON.stringify(
-        app,
-        null,
-        2
-    );
-
-    const blob =
-    new Blob(
-        [data],
-        {
-            type:
-            'application/json'
-        }
-    );
-
-    const a =
-    document
-    .createElement('a');
-
-    a.href =
-    URL
-    .createObjectURL(
-        blob
-    );
-
-    a.download =
-    'merch_backup.json';
-
-    a.click();
-
-}
-
-function importBackup(
-    event
+if(
+onlyNeeded
 ){
 
-    const file =
-    event.target.files[0];
+products =
+products.filter(
+product=>
 
-    if(!file){
-        return;
-    }
+app.days[today]
+.stores[currentStore]
+[product]
+.count > 0
 
-    const reader =
-    new FileReader();
-
-    reader.onload =
-    function(e){
-
-        app =
-        JSON.parse(
-            e.target.result
-        );
-
-        saveData();
-
-        location.reload();
-
-    };
-
-    reader.readAsText(
-        file
-    );
+);
 
 }
 
-function renderHistory(){
+if(
+sort==="alpha"
+){
+products.sort();
+}
 
-    let html = "";
+if(
+sort==="qtyDesc"
+){
 
-    app.history
-    .slice()
-    .reverse()
-    .forEach(day=>{
+products.sort(
+(a,b)=>
 
-        let content = "";
+app.days[today]
+.stores[currentStore]
+[b]
+.count
 
-        Object
-        .entries(
-            day.stores
-        )
-        .forEach(
-        ([store,items])=>{
+-
 
-            content +=
-            `<h4>${store}</h4>`;
+app.days[today]
+.stores[currentStore]
+[a]
+.count
 
-            Object
-            .entries(items)
-            .forEach(
-            ([product,count])=>{
+);
 
-                content += `
-                ${product}
-                —
-                ${count}
-                <br>
-                `;
+}
 
-            });
+if(
+sort==="qtyAsc"
+){
 
-        });
+products.sort(
+(a,b)=>
 
-        html += `
+app.days[today]
+.stores[currentStore]
+[a]
+.count
 
-        <details
-        class="
-        calendar-date
-        ">
+-
 
-        <summary>
-        ${day.date}
-        </summary>
+app.days[today]
+.stores[currentStore]
+[b]
+.count
 
-        ${content}
+);
 
-        </details>
+}
 
-        `;
+let html = "";
+let total = 0;
 
-    });
+products.forEach(
+product=>{
 
-    document
-    .getElementById(
-        "historyContainer"
-    )
-    .innerHTML = html;
+const item =
+app.days[today]
+.stores[currentStore]
+[product];
+
+total +=
+item.count;
+
+html += `
+
+<div class="
+product
+${item.taken ? 'done' : ''}
+">
+
+<div class="
+product-name
+">
+
+${product}
+
+</div>
+
+<div class="
+counter-row
+">
+
+<button
+class="
+small-btn
+"
+onclick="
+changeCount(
+'${product}',
+-1
+)
+">
+-1
+</button>
+
+<div class="
+counter
+">
+${item.count}
+</div>
+
+<button
+class="
+small-btn
+"
+onclick="
+changeCount(
+'${product}',
+1
+)
+">
++1
+</button>
+
+<button
+class="
+small-btn
+"
+onclick="
+changeCount(
+'${product}',
+5
+)
+">
++5
+</button>
+
+<button
+class="
+small-btn
+"
+onclick="
+changeCount(
+'${product}',
+10
+)
+">
++10
+</button>
+
+</div>
+
+<div
+style="
+display:flex;
+gap:8px;
+">
+
+<button
+
+class="
+btn
+${item.taken
+?
+'btn-green'
+:
+'btn-red'
+}
+"
+
+onclick="
+toggleTaken(
+'${product}'
+)
+">
+
+${item.taken
+?
+'🟢 Взято'
+:
+'🔴 Не взято'
+}
+
+</button>
+
+<button
+
+class="
+btn
+btn-red
+"
+
+onclick="
+deleteProduct(
+'${product}'
+)
+">
+
+🗑
+
+</button>
+
+</div>
+
+</div>
+
+`;
+
+});
+
+document
+.getElementById(
+"productList"
+)
+.innerHTML =
+html;
+
+document
+.getElementById(
+"totalCount"
+)
+.innerText =
+total;
 
 }
 
 function saveDay(){
 
-    const snapshot = {
+const snapshot = {
 
-        date:
-        new Date()
-        .toLocaleDateString(
-            'ru-RU'
-        ),
+date:
+new Date()
+.toLocaleDateString(
+'ru-RU'
+),
 
-        stores:{}
+stores:{}
 
-    };
+};
 
-    Object
-    .entries(
-        app.days[today]
-        .stores
-    )
-    .forEach(
-    ([store,items])=>{
+Object.entries(
+app.days[today]
+.stores
+)
+.forEach(
+([store,items])=>{
 
-        const filtered =
-        {};
+const filtered =
+{};
 
-        Object
-        .entries(items)
-        .forEach(
-        ([product,data])=>{
+Object.entries(
+items
+)
+.forEach(
+([product,data])=>{
 
-            if(
-                data.count > 0
-            ){
+if(
+data.count > 0
+){
 
-                filtered[
-                    product
-                ] =
-                data.count;
-
-            }
-
-        });
-
-        if(
-        Object.keys(
-            filtered
-        ).length
-        ){
-
-            snapshot
-            .stores[
-                store
-            ] = filtered;
-
-        }
-
-    });
-
-    app.history.push(
-        snapshot
-    );
-
-    saveData();
-
-    alert(
-    'День сохранен'
-    );
+filtered[
+product
+] =
+data.count;
 
 }
 
-updateTodayLabel();
+});
+
+if(
+Object.keys(
+filtered
+).length
+){
+
+snapshot.stores[
+store
+] =
+filtered;
+
+}
+
+});
+
+app.history.push(
+snapshot
+);
+
+saveData();
+
+alert(
+"День сохранён"
+);
+
+}
+
+function renderCalendar(){
+
+let html = `
+<div class="card">
+
+<button
+class="
+btn
+btn-green
+"
+onclick="
+saveDay()
+">
+💾 Сохранить день
+</button>
+
+</div>
+`;
+
+app.history
+.slice()
+.reverse()
+.forEach(
+day=>{
+
+let content = "";
+
+Object.entries(
+day.stores
+)
+.forEach(
+([store,items])=>{
+
+content += `
+<div class="
+store-block
+">
+
+<h4>
+${store}
+</h4>
+`;
+
+Object.entries(
+items
+)
+.forEach(
+([product,count])=>{
+
+content += `
+${product}
+ — 
+${count}
+<br>
+`;
+
+});
+
+content += `
+</div>
+`;
+
+});
+
+html += `
+
+<details
+class="
+calendar-date
+">
+
+<summary>
+
+📅
+${day.date}
+
+</summary>
+
+<div class="
+history-details
+">
+
+${content}
+
+</div>
+
+</details>
+
+`;
+
+});
+
+document
+.getElementById(
+"calendar"
+)
+.innerHTML =
+html;
+
+}
+
+function exportBackup(){
+
+const blob =
+new Blob(
+
+[
+JSON.stringify(
+app,
+null,
+2
+)
+],
+
+{
+type:
+'application/json'
+}
+
+);
+
+const a =
+document
+.createElement(
+'a'
+);
+
+a.href =
+URL
+.createObjectURL(
+blob
+);
+
+a.download =
+'merch_backup.json';
+
+a.click();
+
+}
+
+function importBackup(
+event
+){
+
+const file =
+event.target.files[0];
+
+if(!file)
+return;
+
+const reader =
+new FileReader();
+
+reader.onload =
+function(e){
+
+app =
+JSON.parse(
+e.target.result
+);
+
+saveData();
+
+location.reload();
+
+};
+
+reader.readAsText(
+file
+);
+
+}
+
+updateHeader();
+
 renderStores();
+
 renderProducts();
+
+document
+.getElementById(
+"searchInput"
+)
+.addEventListener(
+"input",
+renderProducts
+);
+
+document
+.getElementById(
+"sortSelect"
+)
+.addEventListener(
+"change",
+renderProducts
+);
+
+document
+.getElementById(
+"onlyNeeded"
+)
+.addEventListener(
+"change",
+renderProducts
+);
 
 </script>
 
